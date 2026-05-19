@@ -1,4 +1,4 @@
-# Simple Go Server
+# Simple Go Server!
 
 A minimal HTTP server in Go that returns JSON responses.
 
