@@ -1,6 +1,6 @@
 # Simple Go Server
 
-A minimal HTTP server written in Go that returns JSON responses.
+A minimal HTTP server in Go that returns JSON responses.
 
 ## Running
 
