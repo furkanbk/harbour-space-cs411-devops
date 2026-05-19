@@ -8,7 +8,7 @@ A minimal HTTP server in Go that serves JSON responses.
 go run main.go
 ```
 
-Server starts on port `4444` by default.
+Runs on port `4444` by default.
 
 ## Endpoints
 
