@@ -3,3 +3,5 @@ how to rename the folder name to app without breaking git references?
 how to make a go build for windows amd64 system?
 
 check the following binary build for windows versus my original build file ./main, what are the differences?
+
+Check the stripped build vs original build, explain me the differences, what does strip flags do?
