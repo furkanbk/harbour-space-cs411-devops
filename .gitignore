@@ -1,0 +1,7 @@
+# Binaries
+main
+main-stripped
+main.exe
+
+# IDE
+.idea/
