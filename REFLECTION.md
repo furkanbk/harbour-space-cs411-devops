@@ -1,3 +1,5 @@
+#CHALLENGE 1:
+
 ## what did I do?
 I performed a compile build for windows OS with amd64 Architecture.
 When I compared the binary contents between the ./main and ./main-exe using opencode, 
@@ -26,6 +28,8 @@ is taking up the space.
 The concept of linker is only understood in high level. I am not feeling very comfortable to be a DevOps engineer
 who uses best practices for dependency management during builds and deployment.
 
+
+#CHALLENGE 3: 
 ## What does an orchestrator do with a HEALTHCHECK signal?
 I chose Kubernetes (k8s). Kubernetes does not natively read the Docker HEALTHCHECK signal directly. Instead, it relies on its own liveness and readiness probes, which can be configured to perform HTTP requests, TCP socket checks, or execute commands inside the container. However, when a container's HEALTHCHECK fails repeatedly, Docker marks the container as `unhealthy`. If Kubernetes is using Docker as the container runtime, an unhealthy container might still be considered running by Kubernetes unless the liveness probe also fails. The key point is that Kubernetes takes external action based on its own probes: if a liveness probe fails, Kubernetes restarts the container; if a readiness probe fails, Kubernetes removes the pod from the service endpoints so it no longer receives traffic. So while the HEALTHCHECK signal is consumed by Docker to report the container state, the orchestrator (Kubernetes) acts on its own health signals to ensure availability and resilience.
 
