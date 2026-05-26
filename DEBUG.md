@@ -26,7 +26,7 @@ the high compatibility is important, use static builds, because go libraries see
   -- command "docker buildx imagetools inspect ttl.sh/<your-name>:2h" will enable reviewing the metadat of the remote image and check for its platform. Check if it seems incompatible with the build binary.
 
 
-     My fix: "docker buildx build --platform linux/amd64 ."
-
-     This way we specifically mention what cpu architecture we are building to.
+- My fix: "docker buildx build --platform linux/amd64 ." This way we specifically mention what cpu architecture we are building to.
    
+
+- “The image is built” only guarantees that the build process succeeded for a specific target platform and produces a valid artifact — it does not guarantee compatibility with the runtime host unless the image’s architecture (and all binaries inside it) matches that host.
