@@ -19,10 +19,15 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh "docker pull ttl.sh/furkan-kocak:2h"
-                sh "docker stop go-server || true"
-                sh "docker rm go-server || true"
-                sh "docker run -d -p 4444:4444 --name go-server ttl.sh/furkan-kocak:2h"
+                withCredentials([sshUserPrivateKey(credentialsId: 'DOCKER_SSH_KEY', keyFileVariable: 'DOCKER_SSH_KEY')]) {
+                    sh '''
+                        ssh -i $DOCKER_SSH_KEY -o StrictHostKeyChecking=no laborant@docker \
+                            "docker pull ttl.sh/furkan-kocak:2h && \
+                             docker stop go-server || true && \
+                             docker rm go-server || true && \
+                             docker run -d -p 4444:4444 --name go-server ttl.sh/furkan-kocak:2h"
+                    '''
+                }
             }
         }
     }
