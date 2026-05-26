@@ -17,5 +17,13 @@ pipeline {
                 sh "docker push ttl.sh/furkan-kocak:2h"
             }
         }
+        stage('Deploy') {
+            steps {
+                sh "docker pull ttl.sh/furkan-kocak:2h"
+                sh "docker stop go-server || true"
+                sh "docker rm go-server || true"
+                sh "docker run -d -p 4444:4444 --name go-server ttl.sh/furkan-kocak:2h"
+            }
+        }
     }
 }
