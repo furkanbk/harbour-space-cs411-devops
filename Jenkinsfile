@@ -41,7 +41,7 @@ spec:
         path: /
         port: 4444
 EOF
-                        kubectl apply -f pod.yaml \
+                        kubectl replace --force -f pod.yaml \
                             --server=https://kubernetes:6443 --token=$TOKEN --insecure-skip-tls-verify=true
                     '''
                 }
