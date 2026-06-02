@@ -4,8 +4,8 @@ terraform.tfstate
 terraform.tfstate.*
 *.tfplan
 
-# Lock file (optional - uncomment to commit for reproducibility)
-# .terraform.lock.hcl
+# Lock file - COMMIT for reproducibility
+!.terraform.lock.hcl
 
 # Logs
 *.log
