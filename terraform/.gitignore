@@ -1,0 +1,11 @@
+# Terraform runtime files (DO NOT COMMIT)
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+*.tfplan
+
+# Lock file (optional - uncomment to commit for reproducibility)
+# .terraform.lock.hcl
+
+# Logs
+*.log

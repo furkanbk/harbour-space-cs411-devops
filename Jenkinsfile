@@ -7,9 +7,27 @@ pipeline {
 
     environment {
         PUBLIC_IP = '13.60.208.203'
+        AWS_REGION = 'eu-north-1'
+        TF_VAR_aws_region = 'eu-north-1'
     }
 
     stages {
+        stage('Terraform Apply') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        cd terraform
+                        terraform init
+                        terraform plan -out=tfplan
+                        terraform apply -auto-approve tfplan
+                    '''
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main main.go'
