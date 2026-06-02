@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-        PUBLIC_IP = '13.60.208.203'
         AWS_REGION = 'eu-north-1'
         TF_VAR_aws_region = 'eu-north-1'
     }
@@ -23,6 +22,7 @@ pipeline {
                         terraform init
                         terraform plan -out=tfplan
                         terraform apply -auto-approve tfplan
+                        terraform output -raw instance_public_ip > ../instance_ip.txt
                     '''
                 }
             }
@@ -36,6 +36,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
+                script {
+                    env.PUBLIC_IP = readFile('instance_ip.txt').trim()
+                }
                 withCredentials([sshUserPrivateKey(credentialsId: 'AWS_SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
 chmod 600 "$SSH_KEY"
