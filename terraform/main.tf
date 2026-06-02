@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 }
 
@@ -12,10 +16,16 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Key Pair
+# Generate a new SSH key pair
+resource "tls_private_key" "my_ec2_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+# Create AWS key pair from generated public key
 resource "aws_key_pair" "my_ec2_key" {
   key_name   = var.key_pair_name
-  public_key = file(var.public_key_path)
+  public_key = tls_private_key.my_ec2_key.public_key_openssh
 
   tags = {
     Name = var.key_pair_name
@@ -25,7 +35,7 @@ resource "aws_key_pair" "my_ec2_key" {
 # Security Group
 resource "aws_security_group" "my_ec2_sg" {
   name        = var.security_group_name
-  description = "Security group for my-ec2 instance"
+  description = "Security group for ${var.instance_name}"
   vpc_id      = var.vpc_id
 
   # SSH access

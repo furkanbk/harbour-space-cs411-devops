@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "instance_name" {
   description = "Name of the EC2 instance"
   type        = string
-  default     = "my-ec2"
+  default     = "harbour-space-app"
 }
 
 variable "instance_type" {
@@ -25,19 +25,13 @@ variable "ami_id" {
 variable "key_pair_name" {
   description = "Name of the key pair"
   type        = string
-  default     = "key-pair-my-ec2"
-}
-
-variable "public_key_path" {
-  description = "Path to the public key file"
-  type        = string
-  default     = "~/.ssh/id_ed25519.pub"
+  default     = "harbour-space-key"
 }
 
 variable "security_group_name" {
   description = "Name of the security group"
   type        = string
-  default     = "launch-wizard-1"
+  default     = "harbour-space-sg"
 }
 
 variable "vpc_id" {
