@@ -1,3 +1,4 @@
+# CHALLENGE 1
 - how to rename the folder name to app without breaking git references?
 
 - how to make a go build for windows amd64 system?
@@ -11,3 +12,12 @@
 Provide me 5 hypotheses that would explain this error.
 
 - What are some options to statically link the binary?
+
+# CHALLENGE 3
+- What did we do so far?
+
+- I still have the same issue, what am I doing wrong?
+
+- this is how it looks on my jenkins the key
+
+- given my questions to you write my prompts briefly to the prompts.md file under challenge 3
