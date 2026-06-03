@@ -11,41 +11,38 @@ pipeline {
                 sh "go build main.go"
             }
         }
+        stage('Docker Build and Push') {
+            steps {
+                sh "docker build -t ttl.sh/furkan-kocak:2h ."
+                sh "docker push ttl.sh/furkan-kocak:2h"
+            }
+        }
         stage('Deploy') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'TARGET_SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'DOCKER_SSH_KEY', keyFileVariable: 'DOCKER_SSH_KEY')]) {
                     sh '''
-                        chmod 600 "$SSH_KEY"
-
-                        scp -o StrictHostKeyChecking=no -i "$SSH_KEY" main laborant@target:/tmp/myapp
-
-                        ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" laborant@target 'bash -s' <<'REMOTE'
-sudo useradd --system --no-create-home --shell /usr/sbin/nologin myapp 2>/dev/null || true
-sudo mkdir -p /opt/myapp
-sudo mv /tmp/myapp /opt/myapp/myapp
-sudo chown -R myapp:myapp /opt/myapp
-sudo chmod +x /opt/myapp/myapp
-
-cat <<'SERVICEFILE' | sudo tee /etc/systemd/system/myapp.service > /dev/null
-[Unit]
-Description=MyApp Go Server
-After=network.target
-
-[Service]
-Type=simple
-User=myapp
-Group=myapp
-ExecStart=/opt/myapp/myapp
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-SERVICEFILE
-
-sudo systemctl daemon-reload
-sudo systemctl enable myapp
-sudo systemctl restart myapp
-REMOTE
+                        ssh -i $DOCKER_SSH_KEY -o StrictHostKeyChecking=no laborant@docker \
+                            "docker pull ttl.sh/furkan-kocak:2h && \
+                             docker stop go-server || true && \
+                             docker rm go-server || true && \
+                             docker run -d -p 4444:4444 --name go-server ttl.sh/furkan-kocak:2h"
+                    '''
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'DOCKER_SSH_KEY', keyFileVariable: 'DOCKER_SSH_KEY')]) {
+                    sh '''
+                        ssh -i $DOCKER_SSH_KEY -o StrictHostKeyChecking=no laborant@docker '
+                            sleep 3
+                            RESPONSE=$(wget -qO- http://localhost:4444/) || { echo "Health check failed: could not reach service"; exit 1; }
+                            echo "Response: $RESPONSE"
+                            echo "$RESPONSE" | grep -q "Name" || { echo "Missing Name"; exit 1; }
+                            echo "$RESPONSE" | grep -q "Description" || { echo "Missing Description"; exit 1; }
+                            echo "$RESPONSE" | grep -q "Url" || { echo "Missing Url"; exit 1; }
+                            echo "Test passed: Service is healthy and returns expected JSON"
+                        '
                     '''
                 }
             }

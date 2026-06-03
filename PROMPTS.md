@@ -1,4 +1,4 @@
-# Challenge 1
+# CHALLENGE 1
 - how to rename the folder name to app without breaking git references?
 
 - how to make a go build for windows amd64 system?
@@ -18,3 +18,11 @@ Provide me 5 hypotheses that would explain this error.
 - Describe me the syntax of the unit file needed on the target
 - how to switch the current per-user systemd task to a system-level unit?
 - how to make sure the restart happens on on-failure?
+# CHALLENGE 3
+- What did we do so far?
+
+- I still have the same issue, what am I doing wrong?
+
+- this is how it looks on my jenkins the key
+
+- given my questions to you write my prompts briefly to the prompts.md file under challenge 3
