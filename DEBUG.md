@@ -16,6 +16,7 @@ So it can be a good idea to make static baked builds for reproducibility
 - It seems important to always be aware of client's OS and glibc version, and if
 the high compatibility is important, use static builds, because go libraries seem to use dynamic linking by default.
 
+
 # Challenge 2
 
 Hypothesis 1) The Jenkins deploy step starts the application by ./main attached to the SSH session, meaning that the process itself is foregoround session. Hence when the session ends by any reason (ssh closes) the server dies, hence no longer produces response. In our case, if jenkins stage is an ssh command, then when the command finishes ssh exits, hence server dies. We can no longer ssh and access to same session again.
@@ -44,3 +45,20 @@ underlying lesson: a process merely “existing” means it happens to be runnin
    
 
 - “The image is built” only guarantees that the build process succeeded for a specific target platform and produces a valid artifact — it does not guarantee compatibility with the runtime host unless the image’s architecture (and all binaries inside it) matches that host.
+
+# CHALLENGE 5
+
+**Hypothesis 1 - **EC2 Security Group is not allowing inbound TCP on port 4444 (more likely). The EC2 Security Group is  dropping packets tht target the port 4444 from the internet because no inbound rule permits that traffic; the request leaves my laptop, reaches AWS's and is discarded with no result sent back, which is why curl hangs rather than failing fast.
+
+Verification: I would first go to AWS console and check the Security Group inbound rules.
+EC2 → Instances → select instance → Security tab → click the Security Group → Inbound rules (like we did in the course)
+
+**Hypothesis 2 -** A subnet Network ACL (NACL) is blocking traffic on port 4444. unlike Security Groups, NACLs are stateless and evaluate inbound and outbound rules independently; a missing or explicit-DENY inbound rule on port 4444, or a too-narrow outbound ephemeral-port range that blocks the return traffic, causes the SYN to be dropped (or the SYN-ACK to never leave the subnet). As NACLs are subnet-scoped and evaluated BEFORE the SG, so even a perfectly configured SG won't save us if the NACL has a DENY entry that fires first.
+
+Verification: I would first go to AWS console and inspect the subnet's Network ACL rules
+VPC → Subnets → select the instance's subnet → Network ACL tab → Inbound rules 
+
+**Fix:** If the issue is hyptohesis 1, then add inbound rule to SG -> Custom TCP -  TCP - 4444 - 0.0.0.0/0
+If the issue is hyptohesis to, add inbound and outbound rules for the problematic subnet to allow access on port 4444 and on source 0.0.0.0/0
+
+**One line summary:** A Security Group is a stateful bouncer at the instance door — allow in, return is automatic; a NACL is a stateless checkpoint at the subnet gate — it checks every packet independently, in rule order, before traffic ever reaches your instance.
