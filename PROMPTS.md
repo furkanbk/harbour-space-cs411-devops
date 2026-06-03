@@ -18,7 +18,7 @@ Provide me 5 hypotheses that would explain this error.
 - Describe me the syntax of the unit file needed on the target
 - how to switch the current per-user systemd task to a system-level unit?
 - how to make sure the restart happens on on-failure?
-# CHALLENGE 3
+# CHALLENGE 5
 - Write a terraform/main.tf that declares aws_instance, aws_security_group, and aws_key_pair. How should I structure the variables and outputs? Run terraform apply from the Jenkins pipeline using credentials stored in Jenkins.
 
 - My terraform files are being gitignored and I need to push them to the repo. What's the correct .gitignore configuration for Terraform projects?
@@ -31,4 +31,4 @@ Provide me 5 hypotheses that would explain this error.
 
 - The homework checker seems to not complete when validating my terraform/ directory. What are common issues that cause Terraform validation to fail or hang in automated checkers?
 
-- Update PROMPTS.md with these questions in a concise format.
+- What is subnet Network ACL (NACL) and how can it block requests (make them hang) when SG is allowing?
